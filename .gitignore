@@ -1,0 +1,11 @@
+venv/
+creds/
+.idea/
+*.json
+*.txt
+*migrations/
+*settings.py
+*.pyc
+*.sqlite3
+settings.py
+data/
