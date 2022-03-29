@@ -1,10 +1,7 @@
 import tweepy
 from distracker import settings
 from transformers import pipeline
-from transformers import AutoTokenizer
-from transformers import AutoModelForSequenceClassification
-from transformers import TFAutoModelForSequenceClassification
-import sys
+from transformers import AutoTokenizer, AutoModel
 
 #sys.path.append('$HOME/.cargo/bin')
 
@@ -24,25 +21,24 @@ def get_tweets(q):
 		twt_1 = tweets.data[i].text
 		sent1 = sent_model(twt_1)
 		twt_2 = conv_responses[i]
+		sent_21 = sent_model(twt_2[0].data.text)
 		if twt_2[1] is not None:
-			sent_21 = sent_model(twt_2[0].data.text)
 			sent_22 = sent_model(twt_2[1].data.text)
 
 
 
+
+
 #Based on a list of conversation ids, return the original message and response if exists
-def get_message_tree(conversations):
+def get_message_tree(convers):
 	conversations =[]
 	client = tweepy.Client(bearer_token=tkn)
-	for id in conversations:
-		print(id)
-		if id['conversation'] == id['reference']:
-			print(id['conversation'])
-			tweet = client.get_tweet(id['conversation'], tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics', 'created_at', 'referenced_tweets', 'geo'])
+	for con in convers:
+		if con['conversation'] == con['reference']:
+			tweet = client.get_tweet(con['conversation'], tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics', 'created_at', 'referenced_tweets', 'geo'])
 			conversations.append((tweet,None))
-		elif id['conversation'] != id['reference']:
-			print(id['conversation'])
-			tweet_conv = client.get_tweet(id['conversation'], tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics', 'created_at', 'referenced_tweets', 'geo'])
-			tweet_ref = client.get_tweet(id['reference'], tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics', 'created_at', 'referenced_tweets', 'geo'])
+		elif con['conversation'] != con['reference']:
+			tweet_conv = client.get_tweet(con['conversation'], tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics', 'created_at', 'referenced_tweets', 'geo'])
+			tweet_ref = client.get_tweet(con['reference'], tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics', 'created_at', 'referenced_tweets', 'geo'])
 			conversations.append((tweet_conv, tweet_ref))
 	return conversations
