@@ -7,8 +7,8 @@ import torch
 
 model = SentenceTransformer('bert-base-nli-mean-tokens')
 word_tokenizer = NLTKWordTokenizer()
-tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base", use_fast=False)
-tweet_model = AutoModel.from_pretrained("vinai/bertweet-base")
+#tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base", use_fast=False)
+#tweet_model = AutoModel.from_pretrained("vinai/bertweet-base")
 
 stop_words = set(stopwords.words('english'))
 
@@ -25,7 +25,7 @@ def tweet_similarity(sent, sentences):
 
 
 #Using Bertweet to get embeddings with tokenization
-def tweet_embedding(sent, sentences):
+def tweet_embedding(sent, sentences, tweet_model, tokenizer):
 	sentences = normalize_text(sentences)
 	max_len = max([len(s) for s in sentences])
 	tokens = {'input_ids': [], 'attention_mask': []}
