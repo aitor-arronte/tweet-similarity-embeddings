@@ -27,7 +27,7 @@ def get_tweets_score(q):
 			if tweets_original.data[i].public_metrics['retweet_count'] > 10:
 				sentences.append(tweets_res[i].data.text)
 				tweets.append(tweets_res[i].data)
-	print(len(sentences))
+
 	if tweets_res.data is not None:
 		#Loop over replies and responses
 		for i in range(0, len(conv_responses)-1):
