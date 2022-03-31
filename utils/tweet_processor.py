@@ -8,10 +8,9 @@ tkn= getattr(settings, "BEARER_TOKEN", None)
 
 
 #GET tweets based on query and return amplification score
-def get_tweets(q):
+def get_tweets_score(q):
 	tweets=[]
 	sentences = []
-	sentences.append(q)
 	client = tweepy.Client(bearer_token=tkn)
 	query = q+' -is:retweet lang:en'
 	tweets_original = client.search_recent_tweets(query=query, tweet_fields=['author_id','conversation_id', 'in_reply_to_user_id', 'public_metrics',
@@ -41,9 +40,15 @@ def get_tweets(q):
 			if conv_responses[i][1] is not None and conv_responses[i][1].data.public_metrics['retweet_count']>10:
 				sentences.append(conv_responses[i][1].data.text)
 				tweets.append(conv_responses[i][1].data)
-
-	#Tweet similarity given a query
-	similar_tweets = tweet_similarity(sentences)
+	score = 0
+	if len(sentences)>1:
+		#Tweet similarity given a query returns indices
+		ind_similar = tweet_similarity(q, sentences)
+		for i in ind_similar:
+			rt = tweets[i].public_metrics['retweet_count']
+			lk = tweets[i].public_metrics['like_count']
+			score += (0.6*rt)+(0.4*lk)
+	return score
 
 
 #Based on a list of conversation ids, return the original message and response if exists

@@ -7,26 +7,21 @@ import torch
 
 model = SentenceTransformer('bert-base-nli-mean-tokens')
 word_tokenizer = NLTKWordTokenizer()
-tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base", use_fast=False)
-tweet_model = AutoModel.from_pretrained("vinai/bertweet-base")
+#tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base", use_fast=False)
+#tweet_model = AutoModel.from_pretrained("vinai/bertweet-base")
 
 stop_words = set(stopwords.words('english'))
 
 
-def tweet_similarity(sentences):
-	cos = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
-	sen1 = normalize_text(sentences)
-	tk1 =tokenizer.encode(sen1, return_tensors='pt')
-	tk2 = tokenizer.encode(sen2, return_tensors='pt')
-	with torch.no_grad():
-		embd1 = tweet_model(tk1, convert_to_tensor=True)[0]
-		embd2 = tweet_model(tk2)[0]
-	cosine = cos(embd1, embd2)
-
-	if cosine >0.5:
-		return 1
-	else:
-		return 0
+def tweet_similarity(sent, sentences):
+	emb1 = model.encode([sent])
+	emb2 = model.encode(sentences)
+	cosine = util.cos_sim(emb1, emb2)
+	indices=[]
+	for i in range(0, cosine.size(1)):
+		if cosine[0][i] > 0.6:
+			indices.append(i)
+	return indices
 
 
 def normalize_text(sentences):
