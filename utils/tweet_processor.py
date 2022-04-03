@@ -47,7 +47,7 @@ def get_tweets_score(q):
 		for i in ind_similar:
 			rt = tweets[i].public_metrics['retweet_count']
 			lk = tweets[i].public_metrics['like_count']
-			score += (0.6*rt)+(0.4*lk)
+			score += (0.7*rt)+(0.3*lk)
 	return score
 
 
