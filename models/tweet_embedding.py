@@ -19,7 +19,7 @@ def tweet_similarity(sent, sentences):
 	cosine = util.cos_sim(emb1, emb2)
 	indices=[]
 	for i in range(0, cosine.size(1)):
-		if cosine[0][i] > 0.6:
+		if cosine[0][i] > 0.7:
 			indices.append(i)
 	return indices
 
@@ -65,7 +65,6 @@ def mean_pooling(model_output, attention_mask):
     token_embeddings = model_output[0]
     input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
     return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-
 
 
 def normalize_text(sentences):
